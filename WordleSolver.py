@@ -4,6 +4,7 @@ five_letter_words = []
 ineligible_words = []
 current_guess = ''
 current_feedback = ''
+hybrid_mode = True
 
 
 def get_words():
@@ -109,6 +110,13 @@ def process_yellow_character(character, index):
     remove_ineligible_words()
 
 
+def print_possible_words(recommended_word):
+    for word in five_letter_words:
+        if word == recommended_word:
+            word = "{0} (Recommended)".format(word)
+        print("{0}".format(word))
+
+
 def process_all_feedback():
     for index in range(5):
         currentCharacter = current_guess[index].upper()
@@ -136,8 +144,16 @@ five_letter_words = process_all_feedback()
 print('There are {0} eligible words left'.format(len(five_letter_words)))
 
 while True:
-    current_guess = get_next_word().upper()
-    print("Your guess should be {0}".format(current_guess))
-    current_feedback = input('What was Wordle\'s feedback?\n').upper()
+    recommended_word = get_next_word().upper()
+
+    if hybrid_mode and len(five_letter_words) <= 25:
+        print("Here are the recommended words.")
+        print_possible_words(recommended_word)
+        current_guess = input("What is your guess?\n")
+        current_feedback = input('What was Wordle\'s feedback?\n').upper()
+    else:
+        current_guess = recommended_word
+        print("Your guess should be {0}".format(current_guess))
+        current_feedback = input('What was Wordle\'s feedback?\n').upper()
     five_letter_words = process_all_feedback()
     print('There are {0} eligible words left'.format(len(five_letter_words)))
